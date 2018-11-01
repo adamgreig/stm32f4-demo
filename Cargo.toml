@@ -1,0 +1,22 @@
+[package]
+name = "stm32f4-demo"
+version = "0.1.0"
+authors = ["Adam Greig <adam@adamgreig.com>"]
+
+[dependencies]
+# These are fundamental cortex-m support crates
+cortex-m = "0.5.8"
+cortex-m-rt = "0.6.5"
+panic-halt = "0.2.0"
+
+[dependencies.stm32f4]
+version = "0.3.2"
+# Edit this feature to change which STM32F4 device you are using
+features = ["stm32f405", "rt"]
+
+[profile.release]
+# Many of these settings are highly recommended or required for embedded work
+codegen-units = 1
+incremental = false
+debug = true
+lto = true
