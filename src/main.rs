@@ -1,15 +1,10 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_rt;
 extern crate panic_halt;
 
 use cortex_m_rt::entry;
-
-#[macro_use(interrupt)]
-extern crate stm32f4;
-use stm32f4::stm32f405;
+use stm32f4::stm32f405::{self, interrupt};
 
 #[entry]
 fn start() -> ! {
@@ -47,11 +42,9 @@ fn start() -> ! {
     }
 }
 
-// Set `tim2` to be the interrupt handler for TIM2.
-interrupt!(TIM2, tim2);
-
 /// Interrupt handler for TIM2
-fn tim2() {
+#[interrupt]
+fn TIM2() {
     // NOTE(unsafe): We have to use unsafe to access the peripheral
     // registers in this interrupt handler because we already used `take()`
     // in the main code. In this case all our uses are safe, not least because
