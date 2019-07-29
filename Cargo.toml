@@ -11,7 +11,7 @@ cortex-m-rt = "0.6.9"
 panic-halt = "0.2.0"
 
 [dependencies.stm32f4]
-version = "0.7.1"
+version = "0.8.0"
 # Edit this feature to change which STM32F4 device you are using
 features = ["stm32f405", "rt"]
 

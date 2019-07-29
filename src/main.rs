@@ -28,7 +28,7 @@ fn start() -> ! {
     // use unsafe here. This could be fixed by improving the SVD file.
     rcc.apb1enr.modify(|_, w| w.tim2en().enabled());
     tim2.dier.write(|w| w.uie().enabled());
-    tim2.psc.write(|w| unsafe { w.psc().bits(1000) });
+    tim2.psc.write(|w| w.psc().bits(1000));
     tim2.arr.write(|w| w.arr().bits(2000));
     tim2.cr1.write(|w| w.cen().enabled());
 
