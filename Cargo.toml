@@ -6,12 +6,12 @@ edition = "2018"
 
 [dependencies]
 # These are fundamental cortex-m support crates
-cortex-m = "0.6.0"
-cortex-m-rt = "0.6.9"
+cortex-m = "0.6.2"
+cortex-m-rt = "0.6.12"
 panic-halt = "0.2.0"
 
 [dependencies.stm32f4]
-version = "0.8.0"
+version = "0.10.0"
 # Edit this feature to change which STM32F4 device you are using
 features = ["stm32f405", "rt"]
 

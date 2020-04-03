@@ -10,13 +10,11 @@ use stm32f4::stm32f405::{self, interrupt};
 fn start() -> ! {
     // Acquire the device peripherals. They can only be taken once ever.
     let device_peripherals = stm32f405::Peripherals::take().unwrap();
-    let mut core_peripherals = stm32f405::CorePeripherals::take().unwrap();
 
     // Get a reference to GPIOA and RCC to save typing.
     let gpioa = &device_peripherals.GPIOA;
     let rcc = &device_peripherals.RCC;
     let tim2 = &device_peripherals.TIM2;
-    let nvic = &mut core_peripherals.NVIC;
 
     // Enable the GPIOA clock and set PA8 to be an output
     rcc.ahb1enr.modify(|_, w| w.gpioaen().enabled());
@@ -33,7 +31,7 @@ fn start() -> ! {
     tim2.cr1.write(|w| w.cen().enabled());
 
     // Enable the timer interrupt in the NVIC.
-    nvic.enable(stm32f405::Interrupt::TIM2);
+    unsafe { cortex_m::peripheral::NVIC::unmask(stm32f405::Interrupt::TIM2) };
 
     // The main thread can now go to sleep.
     // WFI (wait for interrupt) puts the core in sleep until an interrupt occurs.
@@ -60,12 +58,11 @@ fn TIM2() {
     // otherwise, set it. We use the atomic BSRR register to
     // set/reset it without needing to read-modify-write ODR.
     let ptr = stm32f405::GPIOA::ptr();
-    match unsafe { (*ptr).odr.read().odr8() } {
-        stm32f405::gpioa::odr::ODR15R::HIGH => {
-            unsafe { (*ptr).bsrr.write(|w| w.br8().set_bit()) };
-        },
-        stm32f405::gpioa::odr::ODR15R::LOW => {
-            unsafe { (*ptr).bsrr.write(|w| w.bs8().set_bit()) };
-        },
+    unsafe {
+        if (*ptr).odr.read().odr8().is_high() {
+            (*ptr).bsrr.write(|w| w.br8().set_bit());
+        } else {
+            (*ptr).bsrr.write(|w| w.bs8().set_bit());
+        }
     }
 }
