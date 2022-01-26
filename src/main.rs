@@ -1,12 +1,10 @@
 #![no_std]
 #![no_main]
 
-extern crate panic_halt;
-
-use cortex_m_rt::entry;
+use panic_halt as _;
 use stm32f4::stm32f405::{self, interrupt};
 
-#[entry]
+#[cortex_m_rt::entry]
 fn start() -> ! {
     // Acquire the device peripherals. They can only be taken once ever.
     let device_peripherals = stm32f405::Peripherals::take().unwrap();
